@@ -68,6 +68,10 @@
         		<setProperty propertyName="salario"><jsonpath resultType="String">$.salario</jsonpath></setProperty> 
         			<log message="El salario es: ${property.salario}"/> 
         			
+        			
+        			
+    
+    
         	<choice>
 				<when>
 					<simple> ${property.edad} >= 18 </simple>
@@ -80,6 +84,8 @@
 			</choice>
         	
         	<bean method="Salario" ref="beanRouteFacade"></bean>
+        	<bean method="Resultado" ref="beanRouteFacade"></bean>
+
 
             <stop/>
         </route>

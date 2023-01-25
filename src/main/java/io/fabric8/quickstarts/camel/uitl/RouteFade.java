@@ -1,6 +1,10 @@
 package io.fabric8.quickstarts.camel.uitl;
 
 import org.apache.camel.Exchange;
+import org.apache.camel.model.SetBodyDefinition;
+import org.apache.camel.processor.SetBodyProcessor;
+
+import io.fabric8.quickstarts.camel.model.Persona;
 
 public class RouteFade {
 
@@ -55,7 +59,24 @@ public class RouteFade {
 					
 		exchange.setProperty("salario", salario);
 	}
+	
+	
+	public void Resultado(Exchange exchange) {
 		
+		Persona ResponsePersona = new Persona();
+		ResponsePersona.setNombre("Pukis");
+		ResponsePersona.setEdad((String) exchange.getProperty("edad"));
+		ResponsePersona.setSalario((String) exchange.getProperty("salario"));
+		
+		exchange.getIn().setBody(ResponsePersona);
+		
+
+		
+		
+		
+	}
+	
 }
+	
 
 
