@@ -1,0 +1,15 @@
+== Spring-Boot Camel QuickStart using ConfigMaps and Secrets
+
+----
+$ mvn clean -DskipTests fabric8:deploy -Popenshift
+----
+
+----
+mvn test -Dtest=*KT
+----
+
+Local
+----
+$ mvn spring-boot:run
+----
+. See the messages sent by Camel.

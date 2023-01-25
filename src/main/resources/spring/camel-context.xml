@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+    xmlns:camel="http://camel.apache.org/schema/spring"
+    xmlns:ctx="http://www.springframework.org/schema/context"
+    xmlns:cxf="http://camel.apache.org/schema/cxf"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd        http://camel.apache.org/schema/spring        http://camel.apache.org/schema/spring/camel-spring.xsd  http://camel.apache.org/schema/cxf http://camel.apache.org/schema/cxf/camel-cxf-2.8.3.xsd http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd">
+
+
+	<bean class="org.slf4j.LoggerFactory" factory-method="getLogger" id="rh1">
+		<constructor-arg index="0" value="rh1" />
+	</bean>
+
+    <bean class="com.fasterxml.jackson.jaxrs.json.JacksonJsonProvider" id="jsonProvider"/>
+
+
+	<bean class="io.fabric8.quickstarts.camel.uitl.RouteFade" id="beanRouteFacade" />
+
+
+   <cxf:rsServer address="{{quickstart.endpoint_TESTPRUEBA_Path}}"
+        id="restApiEnpoint" serviceClass="io.fabric8.quickstarts.camel.client.Client">
+        <cxf:providers>
+            <ref bean="jsonProvider"/>
+        </cxf:providers>
+       
+    </cxf:rsServer>
+
+
+	<camelContext id="camel" xmlns="http://camel.apache.org/schema/spring">
+		<!-- Main route -->
+		<dataFormats>
+            <xmljson id="xmljsonList"/>
+            <json id="serializer" library="Jackson" prettyPrint="true"/>
+            <xmljson id="xmljson"/>
+            <xmljson arrayName="tes" elementName="list"
+                expandableProperties="false" forceTopLevelObject="true"
+                id="xmljsonWithOptions" removeNamespacePrefixes="true"
+                rootName="test" skipNamespaces="true" trimSpaces="true"/>
+        </dataFormats>
+        <route id="TESTPRUEBA-ROUTE-MAIN">
+            <from id="_from1" uri="cxfrs:bean:restApiEnpoint?bindingStyle=SimpleConsumer"/>
+            <to id="_to1" uri="bean-validator://x"/>
+            <removeHeaders id="_removeHeaders1" pattern="CamelHttp*"/>
+            <setHeader headerName="Content-Type" id="_setHeader1">
+                <constant>application/json</constant>
+            </setHeader>
+            <toD id="_toD1" uri="direct:${header.operationName}"/>
+        </route>
+		
+		<route id="CONSULTA-DATOS">
+            <from id="_from3" uri="direct:consultarCliente"/>           
+            <marshal id="_marshal5" ref="serializer"/>          
+            <log id="_log3" loggerRef="rh1" message="Despues de consumir el DataSource ${body}"/>
+            <stop id="_stop1"/>
+        </route>
+        
+        
+        <route id="validarEdad">
+            <from uri="direct:validarEdad"/>           
+            <marshal ref="serializer"/>          
+            <log loggerRef="rh1" message="Despues de consumir el DataSource ${body}"/>
+            
+        		<setProperty propertyName="nombre"><jsonpath resultType="String">$.nombre</jsonpath></setProperty> 
+        			<log message="El nombre es: ${property.nombre}"/> 
+        		        		
+        		<setProperty propertyName="edad"><jsonpath resultType="String">$.edad</jsonpath></setProperty> 
+        			<log message="la edad es: ${property.edad}"/> 
+        			
+        		<setProperty propertyName="salario"><jsonpath resultType="String">$.salario</jsonpath></setProperty> 
+        			<log message="El salario es: ${property.salario}"/> 
+        			
+        	<choice>
+				<when>
+					<simple> ${property.edad} >= 18 </simple>
+						<log message="Puede entrar al bar"/>
+				</when>
+				<otherwise>
+					<log message="No puede entrar al bar"/>
+				</otherwise>
+				
+			</choice>
+        	
+        	<bean method="Salario" ref="beanRouteFacade"></bean>
+
+            <stop/>
+        </route>
+        
+        
+
+
+		<route id="generate-order-route">
+
+			<from id="route-timer" uri="file://int" />
+
+			<convertBodyTo type="String"></convertBodyTo>
+			<split stopOnException="true">
+				<!-- split the body -->
+				<xpath>//test/book/price</xpath>
+				<setProperty propertyName="precio">
+					<xpath>//test/book/price</xpath>
+				</setProperty>
+				<log id="_log1" loggerRef="rh1" loggingLevel="ERROR" message="Log slf4j::::::::${body}" />
+
+				<!-- log each splitted message -->
+				<log message="Split line ${body}" />
+				<!-- and have it translated -->
+				<!-- and send it to a mock endpoint -->
+							<toD uri="file://fileRoute/out?fileName=test-$simple{date:now:yyyyMMdd}${property.precio}.xml" />
+                     
+
+			</split>
+
+
+		</route>
+
+
+	</camelContext>
+
+
+</beans>
