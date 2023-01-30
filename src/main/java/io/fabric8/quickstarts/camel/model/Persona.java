@@ -8,6 +8,7 @@ public class Persona {
 	private String salario;
 	private String resultado;
 	
+	
 	public String getNombre() {
 		return nombre;
 	}
@@ -36,6 +37,8 @@ public class Persona {
 		this.resultado = resultado;
 
 	}
+	
+
 	
 }
 

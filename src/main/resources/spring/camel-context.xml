@@ -90,7 +90,28 @@
             <stop/>
         </route>
         
+<!--    Calculadora    -->
         
+        <route id="Operaciones">
+            <from uri="direct:Operaciones"/>           
+            <marshal ref="serializer"/>          
+            <log loggerRef="rh1" message="Despues de consumir el DataSource ${body}"/>
+            
+        		<setProperty propertyName="operacion"><jsonpath resultType="String">$.operacion</jsonpath></setProperty> 
+        			<log message="La operacion es: ${property.operacion}"/> 
+        	
+        		<setProperty propertyName="num1"><jsonpath resultType="String">$.num1</jsonpath></setProperty> 
+        			<log message="El numero 1 es: ${property.num1}"/> 
+        			
+        		<setProperty propertyName="num2"><jsonpath resultType="String">$.num2</jsonpath></setProperty> 
+        			<log message="El numero 2 es: ${property.num2}"/>		
+        			
+        			
+       	<bean method="resultadoOperacion" ref="beanRouteFacade"></bean>
+
+
+            <stop/>
+        </route>
 
 
 		<route id="generate-order-route">

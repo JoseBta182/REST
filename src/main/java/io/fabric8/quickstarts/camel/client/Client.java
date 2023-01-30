@@ -13,6 +13,7 @@ import org.apache.camel.Body;
 
 import io.fabric8.quickstarts.camel.model.Persona;
 import io.fabric8.quickstarts.camel.model.RequestConsulatarCliente;
+import io.fabric8.quickstarts.camel.model.numeros;
 
 public class Client {
 
@@ -29,6 +30,13 @@ public class Client {
 	@Produces(MediaType.APPLICATION_JSON)
 	@Consumes(MediaType.APPLICATION_JSON)
 	public void validarEdad(@Body Persona body) {
+	}
+	
+	@POST
+	@Path("/Operaciones")
+	@Produces(MediaType.APPLICATION_JSON)
+	@Consumes(MediaType.APPLICATION_JSON)
+	public void Operaciones(@Body numeros body) {
 	}
 
 	

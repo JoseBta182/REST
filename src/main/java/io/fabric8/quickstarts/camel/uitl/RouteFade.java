@@ -5,6 +5,8 @@ import org.apache.camel.model.SetBodyDefinition;
 import org.apache.camel.processor.SetBodyProcessor;
 
 import io.fabric8.quickstarts.camel.model.Persona;
+import io.fabric8.quickstarts.camel.model.Response_numero;
+import io.fabric8.quickstarts.camel.model.numeros;
 
 public class RouteFade {
 
@@ -70,10 +72,47 @@ public class RouteFade {
 		
 		exchange.getIn().setBody(ResponsePersona);
 		
-
+		}
+	
+	public void resultadoOperacion (Exchange exchange) {
+		
+		Response_numero responseNumero = new Response_numero();
+		
+		String tipoOperacion = (String) exchange.getProperty("operacion"); 
 		
 		
+		String numero1  = (String) exchange.getProperty("num1");
+		Double a = Double.parseDouble(numero1);
 		
+		String numero2  = (String) exchange.getProperty("num2");
+		Double b = Double.parseDouble(numero2);
+		
+		Double resultado;
+		
+		if (tipoOperacion.contains("suma")) {
+			resultado = a + b;
+			responseNumero.setResultado(resultado);
+		}
+		
+		if (tipoOperacion.contains("resta")) {
+			resultado = a - b;
+			responseNumero.setResultado(resultado);
+		
+		}
+		
+		if (tipoOperacion.contains("multiplicacion")) {
+			resultado = a * b;
+			responseNumero.setResultado(resultado);
+		
+		}
+		
+		if (tipoOperacion.contains("division")) {
+			resultado = a / b;
+			responseNumero.setResultado(resultado);
+		
+		}
+		
+		exchange.getIn().setBody(responseNumero);
 	}
 	
 }

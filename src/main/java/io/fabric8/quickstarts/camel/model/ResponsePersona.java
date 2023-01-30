@@ -5,6 +5,8 @@ public class ResponsePersona {
 	private String nombre;
 	private String edad;
 	private String salario;
+	
+	
 	public String getNombre() {
 		return nombre;
 	}
@@ -23,6 +25,8 @@ public class ResponsePersona {
 	public void setSalario(String salario) {
 		this.salario = salario;
 	}
+	
+	
 	
 	
 
